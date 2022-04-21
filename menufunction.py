@@ -4,6 +4,19 @@ from tkinter import filedialog
 from productdb import *
 
 
+class ProductIcon:
+
+    def __init__(self):
+        self.quantity = None
+
+    def popup(self):
+        ProductGUI = Toplevel()
+        ProductGUI.geometry('600x300')
+        ProductGUI.title('Setting -> Show Product Icon')
+
+        ProductGUI.mainloop()
+
+
 class AddProduct:
 
     def __init__(self):

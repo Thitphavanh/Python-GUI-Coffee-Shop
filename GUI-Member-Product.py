@@ -10,8 +10,8 @@ from productdb import *
 from menufunction import *
 
 # ----------------FUNCTION-----------------
-addproduct = AddProduct()
-
+addProduct = AddProduct()
+productIcon = ProductIcon()
 
 def writetocsv(data, filename='data.csv'):
     with open(filename, 'a', newline='', encoding='utf-8') as file:
@@ -61,9 +61,16 @@ menubar.add_cascade(label='Member', menu=membermenu)
 productmenu = Menu(menubar, tearoff=0)
 menubar.add_cascade(label='Product', menu=productmenu)
 
-productmenu.add_command(label='Add Product', command=addproduct.command)
+productmenu.add_command(label='Add Product', command=addProduct.command)
 
-# ----------------------------------------------
+# ---------------------setting-------------------------
+settingmenu = Menu(menubar, tearoff=0)
+menubar.add_cascade(label='Setting', menu=settingmenu)
+
+settingmenu.add_command(label='Product Icon',command=productIcon.command)
+
+
+
 # Help Menu
 helpmenu = Menu(menubar, tearoff=0)
 menubar.add_cascade(label='Help', menu=helpmenu)

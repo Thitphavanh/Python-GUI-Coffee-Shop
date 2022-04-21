@@ -30,6 +30,16 @@ def ViewProduct():
     return result
 
 
+def ViewProductTableIcon():
+    # READ
+    with conn:
+        command = 'SELECT ID, productid,title FROM product'
+        c.execute(command)
+        result = c.fetchall()
+    print(result)
+    return result
+
+
 def ViewProductSingle(productid):
     # READ
     with conn:
@@ -42,4 +52,5 @@ def ViewProductSingle(productid):
 
 if __name__ == '__main__':
     # InsertProduct('Coffee-1002', 'Americano', '17000', r'C:\Image\americano.png')
-    ViewProduct()
+    # ViewProduct()
+    ViewProductTableIcon()

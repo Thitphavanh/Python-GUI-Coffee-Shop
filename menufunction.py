@@ -8,6 +8,7 @@ class ProductIcon:
 
 	def __init__(self):
 		self.quantity = None
+		self.table_product = None
 
 	def popup(self):
 		ProductGUI = Toplevel()
@@ -18,19 +19,25 @@ class ProductIcon:
 		header = ['ID', 'Code', 'Product name', 'Show Icon']
 		hwidth = [50, 130, 150, 130]
 
-		table_product = ttk.Treeview(ProductGUI, columns=header, show='headings', height=15)
-		table_product.pack()
+		self.table_product = ttk.Treeview(
+			ProductGUI, columns=header, show='headings', height=15)
+		self.table_product.pack()
 
 		for hd, hw in zip(header, hwidth):
-		    table_product.column(hd, width=hw)
-		    table_product.heading(hd, text=hd)
+			self.table_product.column(hd, width=hw)
+			self.table_product.heading(hd, text=hd)
 
+		self.insert_table()
 		ProductGUI.mainloop()
+
+	def insert_table(self):
+		data = ViewProductTableIcon()
+		print(data)
+		for d in data:
+			self.table_product.insert('', 'end', value=d)
 
 	def command(self):
 		self.popup()
-
-
 
 
 class AddProduct:

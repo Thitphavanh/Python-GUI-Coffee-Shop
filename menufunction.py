@@ -48,16 +48,20 @@ class ProductIcon:
 
         # Radio
         RadioButton1 = ttk.Radiobutton(
-            StatusGUI, text='Show icon', variable=self.v_radio, value='show')
+            StatusGUI, text='Show icon', variable=self.v_radio, value='show', command=lambda x=None: print('RadioButton1'))
         RadioButton2 = ttk.Radiobutton(
-            StatusGUI, text='Not show icon', variable=self.v_radio, value='Not show')
+            StatusGUI, text='Not show icon', variable=self.v_radio, value='', command=lambda x=None: print('RadioButton2'))
         RadioButton1.pack()
         RadioButton2.pack()
         RadioButton1.invoke()  # setting default radiobutton
 
         # Dropdown
-        Dropdown = ttk.Combobox(
+        Dropdown1 = ttk.Combobox(
             StatusGUI, values=['Show icon', 'Not show icon'])
+        Dropdown1.pack()
+        Dropdown1.set('Show icon')
+        Dropdown1.bind('<<ComboboxSelected>>',
+                       lambda x=None: print(Dropdown1.get()))
 
         StatusGUI.mainloop()
 

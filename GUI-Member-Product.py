@@ -1,7 +1,6 @@
 # GUI-Calculator.py
 from tkinter import *
 from tkinter import ttk, messagebox
-import wikipedia
 import csv
 from datetime import datetime
 import webbrowser
@@ -20,6 +19,7 @@ def writetocsv(data, filename='data.csv'):
         fw.writerow(data)
 
 
+
 GUI = Tk()
 GUI.title('Program management')
 GUI.iconbitmap('phenomenal.ico')
@@ -34,6 +34,7 @@ Start_y = (Monitor_height/2) - (Height/2)
 Start_y = Start_y - 50
 
 GUI.geometry('{}x{}+{:.0f}+{:.0f}'.format(Width, Height, Start_x, Start_y))
+
 
 # ----------------MENU BAR-----------------
 menubar = Menu(GUI)
@@ -174,7 +175,7 @@ def AddMenu(name='latte'):
     v_total.set('{:,.2f}'.format(count))
     UpdateTable()
 
-
+'''
 # ROW 0
 B = ttk.Button(CF1, text='ລາເຕ້', image=icon_coffe,
                compound='top', command=lambda m='latte': AddMenu(m))
@@ -207,7 +208,7 @@ B.grid(row=2, column=1, ipadx=20, ipady=10)
 B = ttk.Button(CF1, text='ອາຟໂຟກາໂຕ', image=icon_coffe,
                compound='top', command=lambda m='affogato': AddMenu(m))
 B.grid(row=2, column=2, ipadx=20, ipady=10)
-
+'''
 
 # ---------------Table-----------------
 CF2 = Frame(T3)

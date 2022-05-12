@@ -1,28 +1,31 @@
-# basic-sql.py
+# memberdb.py
 
 import sqlite3
 
-conn = sqlite3.connect('memberdb.sqlite3')
+conn = sqlite3.connect('memberdb.sqlite3') #สร้างไฟล์ฐานข้อมูล
 c = conn.cursor()
 
-# create data to table
+
+# create table
 c.execute("""CREATE TABLE IF NOT EXISTS member (
 				ID INTEGER PRIMARY KEY AUTOINCREMENT,
 				membercode TEXT,
 				fullname TEXT,
 				tel TEXT,
 				usertype TEXT,
-				points INTEGER )""")
+				points INTEGER ) """)
 
-def InsertMember(membercode, fullname, tel, usertype, points):
+
+def Insert_member(membercode,fullname,tel,usertype,points):
 	# CREATE
 	with conn:
 		command = 'INSERT INTO member VALUES (?,?,?,?,?,?)' # SQL
-		c.execute(command, (None, membercode, fullname, tel, usertype, points))
-	conn.commit() # save database
+		c.execute(command,(None,membercode,fullname,tel,usertype,points))
+	conn.commit() # SAVE DATABASE
 	print('saved')
 
-def ViewMember():
+
+def View_member():
 	# READ
 	with conn:
 		command = 'SELECT * FROM member'
@@ -31,26 +34,29 @@ def ViewMember():
 	print(result)
 	return result
 
-def UpdateMember(ID, field, newvalue):
+
+def Update_member(ID,field,newvalue):
 	# UPDATE
 	with conn:
-		command = 'UPDATE member SET {} = (?) WHERE ID = (?)'.format(field)
-		c.execute(command, ([newvalue, ID]))
+		command = 'UPDATE member SET {} = (?) WHERE ID=(?)'.format(field)
+		c.execute(command,([newvalue,ID]))
 	conn.commit()
 	print('updated')
 
-def DeleteMember(ID):
+
+def Delete_member(ID):
 	# DELETE
 	with conn:
-		command = 'DELETE FROM member WHERE ID = (?)'
+		command = 'DELETE FROM member WHERE ID=(?)'
 		c.execute(command,([ID]))
 	conn.commit()
 	print('deleted')
 
 
+
 # UpdateMember(2, 'tel', '654321')	
 # DeleteMember(2)
-ViewMember()
+# ViewMember()
 # res = ViewMember()
 # print(res[0])
 # InsertMember('MB-1003', 'James', '123456', 'Gold', 500)

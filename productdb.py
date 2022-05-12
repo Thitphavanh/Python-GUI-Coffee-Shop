@@ -1,93 +1,121 @@
 import sqlite3
 
-conn = sqlite3.connect('productdb.sqlite3')
+conn = sqlite3.connect('productdb.sqlite3') #สร้างไฟล์ฐานข้อมูล
 c = conn.cursor()
 
 c.execute("""CREATE TABLE IF NOT EXISTS product (
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                productid TEXT,
-                title TEXT,
-                price REAL,
-                image TEXT)""")
+				ID INTEGER PRIMARY KEY AUTOINCREMENT,
+				productid TEXT,
+				title TEXT,
+				price REAL,
+				image TEXT ) """)
 
 c.execute("""CREATE TABLE IF NOT EXISTS product_status (
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                product_id INTEGER,
-                status TEXT)""")
+				ID INTEGER PRIMARY KEY AUTOINCREMENT,
+				product_id INTEGER,
+				status TEXT) """)
 
 
-def InsertProductStatus(product_id, status):
-    check = ViewProductStatus(product_id)
-    if check == None:
-        with conn:
-            command = 'INSERT INTO product_status VALUES (?,?,?)'
-            c.execute(command, (None, product_id, status))
-        conn.commit()
-        print('status saved')
-    else:
-        print('product_id exist !')
-        print(check)
-        UpdateProductStatus(product_id, status)
+def insert_product_status(pid,status):
+	#pid = product id
+	check = view_product_status(pid)
+	if check == None:
+		with conn:
+			command = 'INSERT INTO product_status VALUES (?,?,?)'
+			c.execute(command,(None,pid,status))
+		conn.commit()
+		print('status saved')
+	else:
+		print('pid exist!')
+		print(check)
+		update_product_status(pid,status)
+
+def view_product_status(pid):
+	# READ
+	with conn:
+		command = 'SELECT * FROM product_status WHERE product_id=(?)'
+		c.execute(command,([pid]))
+		result = c.fetchone()
+	return result
+
+def update_product_status(pid,status):
+	# UPDATE
+	with conn:
+		command = 'UPDATE product_status SET status = (?) WHERE product_id=(?)'
+		c.execute(command,([status,pid]))
+	conn.commit()
+	print('updated:',(pid,status))
+
+def Insert_product(productid,title,price,image):
+	# CREATE
+	with conn:
+		command = 'INSERT INTO product VALUES (?,?,?,?,?)' # SQL
+		c.execute(command,(None,productid,title,price,image))
+	conn.commit() # SAVE DATABASE
+	print('saved')
+	# add status after insert product
+	find = View_product_single(productid)
+	insert_product_status(find[0],'')
 
 
-def ViewProductStatus(product_id):
-    # READ
-    with conn:
-        command = 'SELECT * FROM product_status WHERE product_id = (?)'
-        c.execute(command, ([product_id]))
-        result = c.fetchone()
-    return result
+def View_product():
+	# READ
+	with conn:
+		command = 'SELECT * FROM product'
+		c.execute(command)
+		result = c.fetchall()
+	print(result)
+	return result
 
-def UpdateProductStatus(product_id, status):
-    # UPDATE
-    with conn:
-        command = 'UPDATE product_status SET status = (?) WHERE ID = (?)'
-        c.execute(command, ([status, product_id]))
-    conn.commit()
-    print('updated :' ,(product_id,status))
+def View_product_table_icon():
+	# READ
+	with conn:
+		command = 'SELECT ID, productid, title FROM product'
+		c.execute(command)
+		result = c.fetchall()
+	print(result)
+	return result
 
-def InsertProduct(productid, title, price, image):
-    # CREATE
-    with conn:
-        command = 'INSERT INTO product VALUES (?,?,?,?,?)'  # SQL
-        c.execute(command, (None, productid, title, price, image))
-    conn.commit()  # save database
-    print('saved')
-
-
-def ViewProduct():
-    # READ
-    with conn:
-        command = 'SELECT * FROM product'
-        c.execute(command)
-        result = c.fetchall()
-    print(result)
-    return result
+def View_product_single(productid):
+	# READ
+	with conn:
+		command = 'SELECT * FROM product WHERE productid=(?)'
+		c.execute(command,([productid]))
+		result = c.fetchone()
+	print(result)
+	return result
 
 
-def ViewProductTableIcon():
-    # READ
-    with conn:
-        command = 'SELECT ID, productid,title FROM product'
-        c.execute(command)
-        result = c.fetchall()
-    print(result)
-    return result
+def product_icon_list():
+	with conn:
+		command = 'SELECT * FROM product'
+		c.execute(command)
+		product = c.fetchall()
 
+	with conn:
+		command = "SELECT * FROM product_status WHERE status = 'show'"
+		c.execute(command)
+		status = c.fetchall()
 
-def ViewProductSingle(productid):
-    # READ
-    with conn:
-        command = 'SELECT * FROM product WHERE productid = (?)'
-        c.execute(command, ([productid]))
-        result = c.fetchone()
-    print(result)
-    return result
+	result = [] 
 
+	for s in status:
+		for p in product:
+			if s[1] == p[0]:
+				#print(p,s[-1])
+				result.append(p)
+
+	result_dict = {}
+	for r in result:
+		result_dict[r[0]] = {'id':r[0],'productid':r[1],'name':r[2],'price':r[3],'icon':r[4]}
+
+	return result_dict
 
 if __name__ == '__main__':
-    # InsertProduct('Coffee-1002', 'Americano', '17000', r'C:\Image\americano.png')
-    # ViewProduct()
-    # ViewProductTableIcon()
-    InsertProductStatus(1,'show')
-    # print(ViewProductStatus(1))
+	x = product_icon_list()
+	print(x)
+	# View_product()
+	# View_product_table_icon()
+	# insert_product_status(1,'show')
+	# print(view_product_status(1))
+	

@@ -11,6 +11,8 @@ class ProductIcon:
 		self.quantity = None
 		self.table_product = None
 		self.v_radio = None
+		self.button_list = None 
+		self.button_frame = None 
 
 	def popup(self):
 		# PGUI = Product GUI
@@ -80,6 +82,8 @@ class ProductIcon:
 			print('closed')
 			SGUI.destroy() #close window
 			self.insert_table()
+			self.clearbutton()
+			self.create_button()
 
 
 		SGUI.protocol('WM_DELETE_WINDOW', check_close)
@@ -90,6 +94,42 @@ class ProductIcon:
 
 	def command(self):
 		self.popup()
+
+	def clearbutton(self):
+		print('CLEAR_BUTTON')
+		for b in self.button_list.values():
+			# b = {'button':B, 'row':row, 'column':column}
+			b['button'].grid_forget()
+			# b['button'].destroy()
+
+	def create_button(self):
+		print('CREATE_BUTTON')
+		product = product_icon_list()
+
+		global button_dict
+		button_dict = {}
+
+		row = 0
+		column = 0
+		column_quan = 3 
+		for i,(k,v) in enumerate(product.items()):
+			if column == column_quan:
+				column = 0
+				row += 1
+
+			print('IMG:', v['icon'])
+			new_icon = PhotoImage(file=v['icon'])
+			B = ttk.Button(self.button_frame,text=v['name'],compound='top')
+			button_dict[v['id']] = {'button':B, 'row':row, 'column':column}
+			B.configure(command=lambda m=k: AddMenu(m))
+
+			B.configure(image=new_icon)
+			B.image = new_icon
+
+			B.grid(row=row, column=column)
+			column += 1
+
+		self.button_list = button_dict 
 
 
 
@@ -103,10 +143,13 @@ class AddProduct:
 		self.v_price = None
 		self.v_imagepath = None
 		self.MGUI = None
+		self.ProductImage = None
+		self.button_list = None 
+		self.button_frame = None
 
 	def popup(self):
 		self.MGUI = Toplevel()
-		self.MGUI.geometry('300x500')
+		self.MGUI.geometry('400x600')
 		self.MGUI.title('Add Product')
 
 		self.v_productid = StringVar()
@@ -131,7 +174,9 @@ class AddProduct:
 		E3 = ttk.Entry(self.MGUI,textvariable= self.v_price,font=(None,10))
 		E3.pack(pady=10)
 
-		L = Label(self.MGUI,textvariable=self.v_imagepath).pack()
+		img = PhotoImage(file='default-product.png')
+		self.ProductImage = Label(self.MGUI,textvariable=self.v_imagepath, image=img, compound='top')
+		self.ProductImage.pack()
 
 		ButtonSelect = ttk.Button(self.MGUI, text='Choose image ( 50 x 50 px )',command=self.selectfile)
 		ButtonSelect.pack(pady=10)
@@ -148,9 +193,14 @@ class AddProduct:
 				('PNG', '*.png'),
 				('All files', '*.*')
 			)
-		select = filedialog.askopenfilename(title='Choose files',initialdir='/',filetypes=filetypes)
+		DIR = os.getcwd() 
+		select = filedialog.askopenfilename(title='Choose files',initialdir=DIR,filetypes=filetypes)
+		img = PhotoImage(file=select)
+		self.ProductImage.configure(image=img)
+		self.ProductImage.image = img # ****
+
 		self.v_imagepath.set(select)
-		self.MGUI.focus_force() # focus window select
+		self.MGUI.focus_force() # โฟกัสหน้าต่างที่ select
 		self.MGUI.grab_set()
 		'''
 		# focus on top level (next time)
@@ -173,9 +223,46 @@ class AddProduct:
 		self.v_imagepath.set('')
 		View_product()
 
+		self.clearbutton()
+		self.create_button()
+
 
 	def command(self):
 		self.popup()
+
+	def clearbutton(self):
+		print('CLEAR_BUTTON')
+		for b in self.button_list.values():
+			# b = {'button':B, 'row':row, 'column':column}
+			b['button'].grid_forget()
+			# b['button'].destroy()
+
+	def create_button(self):
+		print('CREATE_BUTTON')
+		product = product_icon_list()
+
+		global button_dict
+		button_dict = {}
+
+		row = 0
+		column = 0
+		column_quan = 3 
+		for i,(k,v) in enumerate(product.items()):
+			if column == column_quan:
+				column = 0
+				row += 1
+
+			print('IMG:', v['icon'])
+			new_icon = PhotoImage(file=v['icon'])
+			B = ttk.Button(self.button_frame,text=v['name'],compound='top')
+			button_dict[v['id']] = {'button':B, 'row':row, 'column':column}
+			B.configure(command=lambda m=k: AddMenu(m))
+
+			B.configure(image=new_icon)
+			B.image = new_icon
+
+			B.grid(row=row, column=column)
+			column += 1
 
 
 if __name__ == '__main__':

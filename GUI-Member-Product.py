@@ -189,6 +189,7 @@ for i,(k,v) in enumerate(product.items()):
     column += 1
     print('--------')
 '''
+button_dict = {}
 
 row = 0
 column = 0
@@ -197,10 +198,33 @@ for i,(k,v) in enumerate(product.items()):
     if column == column_quan:
         column = 0
         row += 1
-    B = ttk.Button(CF1,text=v['name'],image=icon_tab3,compound='top')
+
+    print('IMG:', v['icon'])
+    new_icon = PhotoImage(file=v['icon'])
+    B = ttk.Button(CF1,text=v['name'],compound='top')
+    button_dict[v['id']] = {'button':B, 'row':row, 'column':column}
     B.configure(command=lambda m=k: AddMenu(m))
+
+    B.configure(image=new_icon)
+    B.image = new_icon
+
     B.grid(row=row, column=column)
     column += 1
+
+addproduct.button_list = button_dict
+addproduct.button_frame = CF1
+
+product_icon.button_list = button_dict
+product_icon.button_frame = CF1
+
+
+print(button_dict)
+def testclearbutton(event):
+    for b in button_dict.values():
+        # b = {'button':B, 'row':row, 'column':column}
+        b['button'].grid_forget()
+
+GUI.bind('<F5>',testclearbutton)
 
 '''
 # ROW 0
@@ -355,7 +379,7 @@ LCode = Label(T4,textvariable=v_membercode,font=(None,10)).place(x=150,y=20)
 E41, L, v_fullname = ET3(F41, 'Full-name :')
 E41.pack()
 
-E42, L, v_moblie = ET3(F41, 'Moblie :')
+E42, L, v_tel = ET3(F41, 'Moblie :')
 E42.pack()
 
 E43, L, v_usertype = ET3(F41, 'Member :')

@@ -1,6 +1,6 @@
 import sqlite3
 
-conn = sqlite3.connect('productdb.sqlite3') #สร้างไฟล์ฐานข้อมูล
+conn = sqlite3.connect('productdb.sqlite3')  # สร้างไฟล์ฐานข้อมูล
 c = conn.cursor()
 
 c.execute("""CREATE TABLE IF NOT EXISTS product (
@@ -16,46 +16,49 @@ c.execute("""CREATE TABLE IF NOT EXISTS product_status (
 				status TEXT) """)
 
 
-def insert_product_status(pid,status):
-	#pid = product id
+def insert_product_status(pid, status):
+	# pid = product id
 	check = view_product_status(pid)
 	if check == None:
 		with conn:
 			command = 'INSERT INTO product_status VALUES (?,?,?)'
-			c.execute(command,(None,pid,status))
+			c.execute(command, (None, pid, status))
 		conn.commit()
 		print('status saved')
 	else:
 		print('pid exist!')
 		print(check)
-		update_product_status(pid,status)
+		update_product_status(pid, status)
+
 
 def view_product_status(pid):
 	# READ
 	with conn:
 		command = 'SELECT * FROM product_status WHERE product_id=(?)'
-		c.execute(command,([pid]))
+		c.execute(command, ([pid]))
 		result = c.fetchone()
 	return result
 
-def update_product_status(pid,status):
+
+def update_product_status(pid, status):
 	# UPDATE
 	with conn:
 		command = 'UPDATE product_status SET status = (?) WHERE product_id=(?)'
-		c.execute(command,([status,pid]))
+		c.execute(command, ([status, pid]))
 	conn.commit()
-	print('updated:',(pid,status))
+	print('updated:', (pid, status))
 
-def Insert_product(productid,title,price,image):
+
+def Insert_product(productid, title, price, image):
 	# CREATE
 	with conn:
-		command = 'INSERT INTO product VALUES (?,?,?,?,?)' # SQL
-		c.execute(command,(None,productid,title,price,image))
-	conn.commit() # SAVE DATABASE
+		command = 'INSERT INTO product VALUES (?,?,?,?,?)'  # SQL
+		c.execute(command, (None, productid, title, price, image))
+	conn.commit()  # SAVE DATABASE
 	print('saved')
 	# add status after insert product
 	find = View_product_single(productid)
-	insert_product_status(find[0],'')
+	insert_product_status(find[0], '')
 
 
 def View_product():
@@ -67,6 +70,7 @@ def View_product():
 	print(result)
 	return result
 
+
 def View_product_table_icon():
 	# READ
 	with conn:
@@ -76,11 +80,12 @@ def View_product_table_icon():
 	print(result)
 	return result
 
+
 def View_product_single(productid):
 	# READ
 	with conn:
 		command = 'SELECT * FROM product WHERE productid=(?)'
-		c.execute(command,([productid]))
+		c.execute(command, ([productid]))
 		result = c.fetchone()
 	print(result)
 	return result
@@ -97,19 +102,21 @@ def product_icon_list():
 		c.execute(command)
 		status = c.fetchall()
 
-	result = [] 
+	result = []
 
 	for s in status:
 		for p in product:
 			if s[1] == p[0]:
-				#print(p,s[-1])
+				# print(p,s[-1])
 				result.append(p)
 
 	result_dict = {}
 	for r in result:
-		result_dict[r[0]] = {'id':r[0],'productid':r[1],'name':r[2],'price':r[3],'icon':r[4]}
+		result_dict[r[0]] = {'id': r[0], 'productid': r[1],
+							 'name': r[2], 'price': r[3], 'icon': r[4]}
 
 	return result_dict
+
 
 if __name__ == '__main__':
 	x = product_icon_list()
@@ -118,4 +125,3 @@ if __name__ == '__main__':
 	# View_product_table_icon()
 	# insert_product_status(1,'show')
 	# print(view_product_status(1))
-	

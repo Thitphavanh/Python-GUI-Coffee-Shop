@@ -149,6 +149,7 @@ product = {'latte': {'name': 'ລາເຕ້', 'price': 18000},
            'affogato': {'name': 'ອາຟໂຟກາໂຕ', 'price': 16000},
            'coco': {'name': 'ໂກໂກ້', 'price': 16000}}
 '''
+
 product = product_icon_list()
 print(product)
 
@@ -176,37 +177,24 @@ def AddMenu(name='latte'):
     UpdateTable()
 
 
-
-'''
-row = 0        
-column = 0         
-for i,(k,v) in enumerate(product.items()):
-    if column == 3:
-               column = 0
-               row += 1
-    print("B = ttk.Button(CF1,text='{}',image=icon_tab3,compound='top',command=lambda m='{}': AddMenu(m)".format(v['name'],k))
-    print('B.grid(row={},column={})'.format(row,column))
-    column += 1
-    print('--------')
-'''
 button_dict = {}
 
 row = 0
 column = 0
-column_quan = 3 
+column_quan = 4 
 for i,(k,v) in enumerate(product.items()):
     if column == column_quan:
         column = 0
         row += 1
 
     print('IMG:', v['icon'])
-    new_icon = PhotoImage(file=v['icon'])
+    # new_icon = PhotoImage(file=v['icon'])
     B = ttk.Button(CF1,text=v['name'],compound='top')
     button_dict[v['id']] = {'button':B, 'row':row, 'column':column}
     B.configure(command=lambda m=k: AddMenu(m))
 
-    B.configure(image=new_icon)
-    B.image = new_icon
+    # B.configure(image=new_icon)
+    # B.image = new_icon
 
     B.grid(row=row, column=column)
     column += 1

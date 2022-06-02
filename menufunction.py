@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
 from productdb import *
-
+import os
 
 
 class ProductIcon:
@@ -197,10 +197,10 @@ class AddProduct:
 		select = filedialog.askopenfilename(title='Choose files',initialdir=DIR,filetypes=filetypes)
 		img = PhotoImage(file=select)
 		self.ProductImage.configure(image=img)
-		self.ProductImage.image = img # ****
+		self.ProductImage.image = img # 
 
 		self.v_imagepath.set(select)
-		self.MGUI.focus_force() # โฟกัสหน้าต่างที่ select
+		self.MGUI.focus_force()
 		self.MGUI.grab_set()
 		'''
 		# focus on top level (next time)

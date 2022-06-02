@@ -188,14 +188,12 @@ for i,(k,v) in enumerate(product.items()):
         row += 1
 
     print('IMG:', v['icon'])
-    # new_icon = PhotoImage(file=v['icon'])
-    B = ttk.Button(CF1,text=v['name'],compound='top')
+    new_icon = PhotoImage(file=v['icon'])
+    B = ttk.Button(CF1,text=v['name'], compound='top')
     button_dict[v['id']] = {'button':B, 'row':row, 'column':column}
     B.configure(command=lambda m=k: AddMenu(m))
-
-    # B.configure(image=new_icon)
-    # B.image = new_icon
-
+    B.configure(image=new_icon)
+    B.image = new_icon
     B.grid(row=row, column=column)
     column += 1
 

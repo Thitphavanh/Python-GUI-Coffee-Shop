@@ -111,8 +111,8 @@ icon_tab2 = PhotoImage(file='Tab6-member.png')
 icon_tab3 = PhotoImage(file='Tab5-coffee.png')
 icon_tab4 = PhotoImage(file='Tab6-member.png')
 
-Tab.add(T3, text='CAFE',image=icon_tab3,compound='left')
-Tab.add(T4, text='Member',image=icon_tab4,compound='left')
+Tab.add(T3, text='CAFE',image=icon_tab3,compound='top')
+Tab.add(T4, text='Member',image=icon_tab4,compound='top')
 
 
 # ----------------TimeStamp-----------------

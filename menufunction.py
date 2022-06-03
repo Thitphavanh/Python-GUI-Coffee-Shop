@@ -87,7 +87,8 @@ class ProductIcon:
 
 	def command(self):
 		self.popup()
-
+		
+	# Refresh ໜ້າສະແດງປຸ້ມ
 	def clearbutton(self):
 		print('CLEAR_BUTTON')
 		for b in self.button_list.values():
@@ -217,6 +218,7 @@ class AddProduct:
 	def command(self):
 		self.popup()
 
+	# Refresh ໜ້າສະແດງປຸ້ມ
 	def clearbutton(self):
 		print('CLEAR_BUTTON')
 		for b in self.button_list.values():

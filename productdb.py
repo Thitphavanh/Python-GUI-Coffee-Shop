@@ -118,6 +118,16 @@ def product_icon_list():
 	return result_dict
 
 
+def update_product(pid, field, data):
+	# UPDATE
+	with conn:
+		command = 'UPDATE product SET {} = (?) WHERE productid=(?)'.format(field)
+		c.execute(command, ([data, pid]))
+	conn.commit()
+	print('updated:', (pid, data))
+
+
+
 if __name__ == '__main__':
 	x = product_icon_list()
 	print(x)

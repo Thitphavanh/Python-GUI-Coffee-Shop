@@ -137,6 +137,9 @@ class AddProduct:
 		self.button_list = None
 		self.button_frame = None
 		self.table_product = None
+		self.ButtonSave = None
+		self.ButtonEdit = None
+		self.ButtonAdd = None
 
 	def popup(self):
 		self.MGUI = Toplevel()
@@ -148,11 +151,14 @@ class AddProduct:
 		self.v_price = StringVar()
 		self.v_imagepath = StringVar()
 
-		Fadd = Frame(self.MGUI)
+		Fadd = Frame(self.MGUI,width=550)
+
 		Fadd.place(x=50,y=50)
 
+
+		L = Label(Fadd, text=' '*30 , font=(None, 15)).pack()
 		L = Label(Fadd, text='PRODUCT LIST', font=(None, 15))
-		L.pack(pady=21)
+		L.pack(pady=8)
 
 		# -----------------
 		L = Label(Fadd, text='PRODUCT ID', font=(None, 10)).pack()
@@ -175,14 +181,21 @@ class AddProduct:
 		ButtonSelect = ttk.Button(Fadd, text='CHOOSE IMAGE ( 50 X 50 PX )', command=self.selectfile)
 		ButtonSelect.pack(pady=10)
 
-		ButtonSave = ttk.Button(Fadd, text='SAVE',command=self.saveproduct)
-		ButtonSave.pack(pady=10, ipadx=8, ipady=10)
+		self.ButtonSave = ttk.Button(Fadd, text='SAVE',command=self.saveproduct)
+		self.ButtonSave.pack(pady=10, ipadx=8, ipady=10)
+
+		self.ButtonEdit = ttk.Button(Fadd, text='EDIT',command=self.update_product_to_database)
+		self.ButtonEdit.pack(pady=10, ipadx=8, ipady=10)
+		self.ButtonEdit.pack_forget()
+
+		self.ButtonAdd = ttk.Button(Fadd, text='ADD',command=self.add_button)
+		self.ButtonAdd.pack(pady=10, ipadx=8, ipady=10)
 
 		header = ['ID', 'CODE', 'PRODUCT NAME', 'PRICE']
-		hwidth = [50, 130, 250, 150]
+		hwidth = [50, 130, 200, 100]
 
-		self.table_product = ttk.Treeview(self.MGUI, columns=header, show='headings', height=22)
-		self.table_product.place(x=250,y=78)
+		self.table_product = ttk.Treeview(self.MGUI, columns=header, show='headings', height=20)
+		self.table_product.place(x=350,y=78)
 
 		for hd, hw in zip(header, hwidth):
 			self.table_product.column(hd, width=hw)
@@ -221,6 +234,26 @@ class AddProduct:
 		v3 = float(self.v_price.get())
 		v4 = self.v_imagepath.get()
 		Insert_product(v1, v2, v3, v4)
+		self.v_productid.set('')
+		self.v_title.set('')
+		self.v_price.set('')
+		self.v_imagepath.set('')
+		View_product()
+
+		self.clearbutton()
+		self.create_button()
+
+
+	def update_product_to_database(self):
+		v1 = self.v_productid.get()
+		v2 = self.v_title.get()
+		v3 = float(self.v_price.get())
+		v4 = self.v_imagepath.get()
+		update_product(v1,'productid',v1)
+		update_product(v1,'title',v2)
+		update_product(v1,'price',v3)
+		update_product(v1,'image',v4)
+
 		self.v_productid.set('')
 		self.v_title.set('')
 		self.v_price.set('')
@@ -278,9 +311,38 @@ class AddProduct:
 			row = list(d)  # convert tuple to list
 			self.table_product.insert('', 'end', value=row[:4])
 
-	def update_product(self):
+	def update_product(self,event):
+		self.ButtonSave.pack_forget()
+		self.ButtonAdd.pack_forget()
+		self.ButtonEdit.pack(pady=10, ipadx=8, ipady=10)
+		self.ButtonAdd.pack(pady=10, ipadx=8, ipady=10)
+
 		select = self.table_product.selection()
-		pid = self.table_product.item(select)['values'][0]
+		pid = self.table_product.item(select)['values'][1]
+		# print(pid)
+		data = View_product_single(pid)
+		# (16, '100017', 'straw-milk', 20000.0, 'C:/Users/Hery/Desktop/My Projects/Python-GUI-Coffee-Shop/strawberry-milk.png')
+		print(data)
+		self.v_productid.set(data[1])
+		self.v_title.set(data[2])
+		self.v_price.set(data[3])
+		self.v_imagepath.set(data[4])
+
+		img = PhotoImage(file=data[4]) # image path
+		self.ProductImage.configure(image=img)
+		self.ProductImage.image = img
+
+	def add_button(self):
+		self.ButtonEdit.pack_forget()
+		self.ButtonAdd.pack_forget()
+		self.ButtonSave.pack(pady=10, ipadx=8, ipady=10)
+		self.ButtonAdd.pack(pady=10, ipadx=8, ipady=10)
+		self.v_productid.set('')
+		self.v_title.set('')
+		self.v_price.set('')
+		self.v_imagepath.set('')
+
+
 
 
 

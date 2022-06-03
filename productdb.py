@@ -126,7 +126,13 @@ def update_product(pid, field, data):
 	conn.commit()
 	print('updated:', (pid, data))
 
-
+def Delete_product(ID):
+	# DELETE
+	with conn:
+		command = 'DELETE FROM product WHERE ID=(?)'
+		c.execute(command,([ID]))
+	conn.commit()
+	print('deleted')
 
 if __name__ == '__main__':
 	x = product_icon_list()

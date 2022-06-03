@@ -22,7 +22,7 @@ class ProductIcon:
 
 		# Table product
 		header = ['ID', 'CODE', 'PRODUCT NAME', 'SHOW ICON']
-		hwidth = [50, 130, 150, 130]
+		hwidth = [50, 130, 160, 110]
 
 		self.table_product = ttk.Treeview(PGUI, columns=header, show='headings', height=15)
 		self.table_product.pack()
@@ -153,12 +153,12 @@ class AddProduct:
 
 		Fadd = Frame(self.MGUI,width=550)
 
-		Fadd.place(x=50,y=50)
+		Fadd.place(x=50,y=34)
 
 
 		L = Label(Fadd, text=' '*30 , font=(None, 15)).pack()
 		L = Label(Fadd, text='PRODUCT LIST', font=(None, 15))
-		L.pack(pady=8)
+		L.pack(pady=10)
 
 		# -----------------
 		L = Label(Fadd, text='PRODUCT ID', font=(None, 10)).pack()
@@ -182,20 +182,20 @@ class AddProduct:
 		ButtonSelect.pack(pady=10)
 
 		self.ButtonSave = ttk.Button(Fadd, text='SAVE',command=self.saveproduct)
-		self.ButtonSave.pack(pady=10, ipadx=8, ipady=10)
+		self.ButtonSave.pack(pady=10, ipadx=8, ipady=5)
 
 		self.ButtonEdit = ttk.Button(Fadd, text='EDIT',command=self.update_product_to_database)
-		self.ButtonEdit.pack(pady=10, ipadx=8, ipady=10)
+		self.ButtonEdit.pack(pady=10, ipadx=8, ipady=5)
 		self.ButtonEdit.pack_forget()
 
 		self.ButtonAdd = ttk.Button(Fadd, text='ADD',command=self.add_button)
-		self.ButtonAdd.pack(pady=10, ipadx=8, ipady=10)
+		self.ButtonAdd.pack(pady=10, ipadx=8, ipady=5)
 
 		header = ['ID', 'CODE', 'PRODUCT NAME', 'PRICE']
-		hwidth = [50, 130, 200, 100]
+		hwidth = [50, 120, 250, 150]
 
-		self.table_product = ttk.Treeview(self.MGUI, columns=header, show='headings', height=20)
-		self.table_product.place(x=350,y=78)
+		self.table_product = ttk.Treeview(self.MGUI, columns=header, show='headings', height=21)
+		self.table_product.place(x=250,y=78)
 
 		for hd, hw in zip(header, hwidth):
 			self.table_product.column(hd, width=hw)
@@ -203,6 +203,7 @@ class AddProduct:
 
 		self.table_product.bind('<Double-1>', self.update_product)
 		self.insert_table()
+		self.table_product.bind('<Delete>', self.delete_product_database)
 		self.MGUI.mainloop()
 
 	def selectfile(self):
@@ -242,6 +243,7 @@ class AddProduct:
 
 		self.clearbutton()
 		self.create_button()
+		self.insert_table()
 
 
 	def update_product_to_database(self):
@@ -258,7 +260,7 @@ class AddProduct:
 		self.v_title.set('')
 		self.v_price.set('')
 		self.v_imagepath.set('')
-		View_product()
+		self.insert_table()
 
 		self.clearbutton()
 		self.create_button()
@@ -314,8 +316,8 @@ class AddProduct:
 	def update_product(self,event):
 		self.ButtonSave.pack_forget()
 		self.ButtonAdd.pack_forget()
-		self.ButtonEdit.pack(pady=10, ipadx=8, ipady=10)
-		self.ButtonAdd.pack(pady=10, ipadx=8, ipady=10)
+		self.ButtonEdit.pack(pady=10, ipadx=8, ipady=5)
+		self.ButtonAdd.pack(pady=10, ipadx=8, ipady=5)
 
 		select = self.table_product.selection()
 		pid = self.table_product.item(select)['values'][1]
@@ -335,12 +337,24 @@ class AddProduct:
 	def add_button(self):
 		self.ButtonEdit.pack_forget()
 		self.ButtonAdd.pack_forget()
-		self.ButtonSave.pack(pady=10, ipadx=8, ipady=10)
-		self.ButtonAdd.pack(pady=10, ipadx=8, ipady=10)
+		self.ButtonSave.pack(pady=10, ipadx=8, ipady=5)
+		self.ButtonAdd.pack(pady=10, ipadx=8, ipady=5)
 		self.v_productid.set('')
 		self.v_title.set('')
 		self.v_price.set('')
 		self.v_imagepath.set('')
+
+	def delete_product_database(self,event):
+		self.v_productid.set('')
+		self.v_title.set('')
+		self.v_price.set('')
+		self.v_imagepath.set('')
+
+		select = self.table_product.selection()
+		pid = self.table_product.item(select)['values'][0]
+
+		Delete_product(pid)
+		self.insert_table()
 
 
 

@@ -22,6 +22,15 @@ def writetocsv(data, filename='data.csv'):
 GUI = Tk()
 GUI.title('Coffee Shop Management')
 # GUI.iconbitmap('loong.ico')
+GUI.state('zoomed')
+
+# ----------------Style-----------------
+style = ttk.Style()
+style.configure('Treeview.Heading',font=(None,12))
+style.configure('Treeview',font=(None,10))
+
+
+# --------------------------------------
 
 Width = 1100
 Height = 650
@@ -112,7 +121,7 @@ icon_tab3 = PhotoImage(file='Tab5-coffee.png')
 icon_tab4 = PhotoImage(file='Tab6-member.png')
 
 Tab.add(T3, text='CAFE',image=icon_tab3,compound='top')
-Tab.add(T4, text='Member',image=icon_tab4,compound='top')
+Tab.add(T4, text='MEMBER',image=icon_tab4,compound='top')
 
 
 # ----------------TimeStamp-----------------
@@ -217,10 +226,10 @@ GUI.bind('<F5>',testclearbutton)
 CF2 = Frame(T3)
 CF2.place(x=500,y=100)
 
-header = ['No.', 'title', 'price','quantity','total']
+header = ['NO.', 'TITLE', 'PRICE','QUANTITY','TOTAL']
 hwidth = [50,200,100,100,100]
 
-table = ttk.Treeview(CF2,columns=header, show='headings',height=15)
+table = ttk.Treeview(CF2,columns=header, show='headings',height=14)
 table.pack()
 
 for hd,hw in zip(header,hwidth):
@@ -231,13 +240,13 @@ for hd,hw in zip(header,hwidth):
 #     table.heading(hd,text=hd)
 
 
-L = Label(T3,text='Total:', font=(None,15)).place(x=500,y=450)
+L = Label(T3,text='TOTAL :', font=(None,15)).place(x=500,y=430)
 
 v_total = StringVar()
 v_total.set('0.0')
 
 LT = Label(T3,textvariable=v_total, font=(None,15))
-LT.place(x=560, y=450)
+LT.place(x=585, y=430)
 
 def Reset():
 	global allmenu
@@ -247,7 +256,7 @@ def Reset():
 	trstamp = datetime.now().strftime('%y%m%d%H%M%S') #GEN Transaction
 	v_transaction.set(trstamp)
 
-B = ttk.Button(T3, text='Clear', command=Reset).place(x=500, y=480)
+B = ttk.Button(T3, text='CLEAR', command=Reset).place(x=500, y=460)
 
 # Transaction ID
 v_transaction = StringVar()
@@ -255,11 +264,11 @@ trstamp = datetime.now().strftime('%y%m%d%H%M%S')  # GEN Transaction
 v_transaction.set(trstamp)
 
 LTR = Label(T3, textvariable=v_transaction, font=(None, 10)).place(x=960, y=70)
-L = Label(T3, text='Transaction ID : ', font=(None, 10)).place(x=870, y=70)
+L = Label(T3, text='TRANSACTION ID : ', font=(None, 10)).place(x=860, y=70)
 
 # Save Button
 FB = Frame(T3)
-FB.place(x=937, y=460)
+FB.place(x=937, y=440)
 
 def AddTransaction():
 	# writetocsv('transaction.csv')
@@ -275,7 +284,7 @@ def AddTransaction():
 	Reset() #clear data
 
 
-B = ttk.Button(FB, text='Order', command=AddTransaction)
+B = ttk.Button(FB, text='ORDER', command=AddTransaction)
 B.pack(ipadx=20, ipady=10)
 
 
@@ -305,7 +314,7 @@ Esearch.bind('<F3>',lambda x: v_search_barcode.set('') )
 
 
 
-Bsearch = ttk.Button(FS1,text='Search',command=SearchBarcode)
+Bsearch = ttk.Button(FS1,text='SEARCH',command=SearchBarcode)
 Bsearch.grid(row=0,column=1,ipadx=5,ipady=12,padx=10)
 
 
@@ -318,10 +327,10 @@ def HistoryWindow(event):
 	HIS = Toplevel() # Similar GUI = Tk()
 	HIS.geometry('750x500')
 
-	L = Label(HIS, text='Order records', font=(None, 30)).pack()
+	L = Label(HIS, text='ORDER RECORDS', font=(None, 30)).pack()
 
 	# History
-	header = ['ts-id','datetime', 'title', 'price','quantity','total']
+	header = ['TRANS ID','DATETIME', 'TITLE', 'PRICE','QUANTITY','TOTAL']
 	hwidth = [100,100,200,100,100,100]
 
 	table_history = ttk.Treeview(HIS,columns=header, show='headings',height=15)
@@ -358,20 +367,20 @@ v_membercode.set('M-1001')
 v_databasecode = IntVar() 
 
 
-L = Label(T4,text='Member-ID :',font=(None,13)).place(x=50,y=20)
-LCode = Label(T4,textvariable=v_membercode,font=(None,10)).place(x=150,y=20)
+L = Label(T4,text='MEMBER ID :',font=(None,13)).place(x=50,y=20)
+LCode = Label(T4,textvariable=v_membercode,font=(None,12)).place(x=160,y=20)
 
-E41, L, v_fullname = ET3(F41, 'Full-name :')
+E41, L, v_fullname = ET3(F41, 'FULLNAME')
 E41.pack()
 
-E42, L, v_tel = ET3(F41, 'Moblie :')
+E42, L, v_tel = ET3(F41, 'MOBLIE')
 E42.pack()
 
-E43, L, v_usertype = ET3(F41, 'Member :')
+E43, L, v_usertype = ET3(F41, 'MEMBER')
 E43.pack()
 v_usertype.set('general')
 
-E44, L, v_point = ET3(F41, 'Point :')
+E44, L, v_point = ET3(F41, 'POINT')
 E44.pack()
 v_point.set('0')
 
@@ -397,7 +406,7 @@ def SaveMember():
 	v_point.set('0')
 
 
-BSave = ttk.Button(F41,text='Save',command=SaveMember)
+BSave = ttk.Button(F41,text='SAVE',command=SaveMember)
 BSave.pack()
 
 def EditMember():
@@ -422,7 +431,7 @@ def EditMember():
 	v_usertype.set('general')
 	v_point.set('0')
 
-BEdit = ttk.Button(F41,text='Edit',command=EditMember)
+BEdit = ttk.Button(F41,text='EDIT',command=EditMember)
 BEdit.pack()
 
 
@@ -437,14 +446,14 @@ def NewMember():
 	v_point.set('0')
 
 
-BNew = ttk.Button(F41,text='New',command=NewMember)
+BNew = ttk.Button(F41,text='NEW',command=NewMember)
 BNew.pack()
 
 # --------------Member table----------
 F42 = Frame(T4)
 F42.place(x=400, y=50)
 
-header = ['ID', 'Code', 'Full-name', 'Moblie', 'Member', 'Point']
+header = ['ID', 'CODE', 'FULLNAME', 'MOBLIE', 'MEMBER', 'POINT']
 hwidth = [40, 100, 150, 100, 100, 100]
 
 table_member = ttk.Treeview(F42,columns=header, show='headings',height=15)

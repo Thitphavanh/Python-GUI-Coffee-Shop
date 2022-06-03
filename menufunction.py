@@ -21,11 +21,10 @@ class ProductIcon:
 		PGUI.title('Setting -> Show Product Icon')
 
 		# Table product
-		header = ['ID', 'Code', 'Product name', 'Show Icon']
+		header = ['ID', 'CODE', 'PRODUCT NAME', 'SHOW ICON']
 		hwidth = [50, 130, 150, 130]
 
-		self.table_product = ttk.Treeview(
-			PGUI, columns=header, show='headings', height=15)
+		self.table_product = ttk.Treeview(PGUI, columns=header, show='headings', height=15)
 		self.table_product.pack()
 
 		for hd, hw in zip(header, hwidth):
@@ -137,43 +136,57 @@ class AddProduct:
 		self.ProductImage = None
 		self.button_list = None
 		self.button_frame = None
+		self.table_product = None
 
 	def popup(self):
 		self.MGUI = Toplevel()
-		self.MGUI.geometry('400x600')
-		self.MGUI.title('Add Product')
+		self.MGUI.geometry('900x600')
+		self.MGUI.title('ADD PRODUCT')
 
 		self.v_productid = StringVar()
 		self.v_title = StringVar()
 		self.v_price = StringVar()
 		self.v_imagepath = StringVar()
 
-		L = Label(self.MGUI, text='Product List', font=(None, 15))
+		Fadd = Frame(self.MGUI)
+		Fadd.place(x=50,y=50)
+
+		L = Label(Fadd, text='PRODUCT LIST', font=(None, 15))
 		L.pack(pady=20)
 
 		# -----------------
-		L = Label(self.MGUI, text='Product ID', font=(None, 10)).pack()
-		E1 = ttk.Entry(self.MGUI, textvariable=self.v_productid,font=(None, 10))
+		L = Label(Fadd, text='PRODUCT ID', font=(None, 10)).pack()
+		E1 = ttk.Entry(Fadd, textvariable=self.v_productid,font=(None, 10))
 		E1.pack(pady=10)
 
 		# -----------------
-		L = Label(self.MGUI, text='Product Name', font=(None, 10)).pack()
-		E2 = ttk.Entry(self.MGUI, textvariable=self.v_title, font=(None, 10))
+		L = Label(Fadd, text='PRODUCT NAME', font=(None, 10)).pack()
+		E2 = ttk.Entry(Fadd, textvariable=self.v_title, font=(None, 10))
 		E2.pack(pady=10)
 
-		L = Label(self.MGUI, text='Product Price', font=(None, 10)).pack()
-		E3 = ttk.Entry(self.MGUI, textvariable=self.v_price, font=(None, 10))
+		L = Label(Fadd, text='PRODUCT PRICE', font=(None, 10)).pack()
+		E3 = ttk.Entry(Fadd, textvariable=self.v_price, font=(None, 10))
 		E3.pack(pady=10)
 
 		img = PhotoImage(file='default-product.png')
-		self.ProductImage = Label(self.MGUI, textvariable=self.v_imagepath, image=img, compound='top')
+		self.ProductImage = Label(Fadd, textvariable=self.v_imagepath, image=img, compound='top')
 		self.ProductImage.pack()
 
-		ButtonSelect = ttk.Button(self.MGUI, text='Choose image ( 50 x 50 px )', command=self.selectfile)
+		ButtonSelect = ttk.Button(Fadd, text='CHOOSE IMAGE ( 50 x 50 px )', command=self.selectfile)
 		ButtonSelect.pack(pady=10)
 
-		ButtonSave = ttk.Button(self.MGUI, text='Save',command=self.saveproduct)
+		ButtonSave = ttk.Button(Fadd, text='SAVE',command=self.saveproduct)
 		ButtonSave.pack(pady=10, ipadx=8, ipady=8)
+
+		header = ['ID', 'CODE', 'PRODUCT NAME', 'PRICE', 'QUANTITY']
+		hwidth = [50, 130, 200, 100,100]
+
+		self.table_product = ttk.Treeview(self.MGUI, columns=header, show='headings', height=20)
+		self.table_product.place(x=250,y=78)
+
+		for hd, hw in zip(header, hwidth):
+			self.table_product.column(hd, width=hw)
+			self.table_product.heading(hd, text=hd)
 
 		self.MGUI.mainloop()
 

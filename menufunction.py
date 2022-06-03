@@ -152,7 +152,7 @@ class AddProduct:
 		Fadd.place(x=50,y=50)
 
 		L = Label(Fadd, text='PRODUCT LIST', font=(None, 15))
-		L.pack(pady=20)
+		L.pack(pady=21)
 
 		# -----------------
 		L = Label(Fadd, text='PRODUCT ID', font=(None, 10)).pack()
@@ -172,22 +172,24 @@ class AddProduct:
 		self.ProductImage = Label(Fadd, textvariable=self.v_imagepath, image=img, compound='top')
 		self.ProductImage.pack()
 
-		ButtonSelect = ttk.Button(Fadd, text='CHOOSE IMAGE ( 50 x 50 px )', command=self.selectfile)
+		ButtonSelect = ttk.Button(Fadd, text='CHOOSE IMAGE ( 50 X 50 PX )', command=self.selectfile)
 		ButtonSelect.pack(pady=10)
 
 		ButtonSave = ttk.Button(Fadd, text='SAVE',command=self.saveproduct)
-		ButtonSave.pack(pady=10, ipadx=8, ipady=8)
+		ButtonSave.pack(pady=10, ipadx=8, ipady=10)
 
-		header = ['ID', 'CODE', 'PRODUCT NAME', 'PRICE', 'QUANTITY']
-		hwidth = [50, 130, 200, 100,100]
+		header = ['ID', 'CODE', 'PRODUCT NAME', 'PRICE']
+		hwidth = [50, 130, 250, 150]
 
-		self.table_product = ttk.Treeview(self.MGUI, columns=header, show='headings', height=20)
+		self.table_product = ttk.Treeview(self.MGUI, columns=header, show='headings', height=22)
 		self.table_product.place(x=250,y=78)
 
 		for hd, hw in zip(header, hwidth):
 			self.table_product.column(hd, width=hw)
 			self.table_product.heading(hd, text=hd)
 
+		self.table_product.bind('<Double-1>', self.update_product)
+		self.insert_table()
 		self.MGUI.mainloop()
 
 	def selectfile(self):
@@ -267,6 +269,19 @@ class AddProduct:
 			column += 1
 
 		# self.button_list = button_dict
+
+	def insert_table(self):
+		self.table_product.delete(*self.table_product.get_children())
+		data = View_product()
+		print(data)
+		for d in data:
+			row = list(d)  # convert tuple to list
+			self.table_product.insert('', 'end', value=row[:4])
+
+	def update_product(self):
+		select = self.table_product.selection()
+		pid = self.table_product.item(select)['values'][0]
+
 
 
 if __name__ == '__main__':

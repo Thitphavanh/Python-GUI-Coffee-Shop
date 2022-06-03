@@ -22,7 +22,7 @@ def writetocsv(data, filename='data.csv'):
 GUI = Tk()
 GUI.title('Coffee Shop Management')
 # GUI.iconbitmap('loong.ico')
-GUI.state('zoomed')
+# GUI.state('zoomed')
 
 # ----------------Style-----------------
 style = ttk.Style()
@@ -70,7 +70,7 @@ menubar.add_cascade(label='Member',menu=membermenu)
 productmenu = Menu(menubar,tearoff=0)
 menubar.add_cascade(label='Product',menu=productmenu)
 
-productmenu.add_command(label='Add Product', command=addproduct.command)
+productmenu.add_command(label='ADD PRODUCT', command=addproduct.command)
 
 # -----------------------------------------
 # Setting
@@ -78,7 +78,7 @@ productmenu.add_command(label='Add Product', command=addproduct.command)
 settingmenu = Menu(menubar,tearoff=0)
 menubar.add_cascade(label='Setting',menu=settingmenu)
 
-settingmenu.add_command(label='Product Icon', command=product_icon.command)
+settingmenu.add_command(label='PRODUCT ICON', command=product_icon.command)
 
 
 # -----------------------------------------
@@ -88,7 +88,7 @@ settingmenu.add_command(label='Product Icon', command=product_icon.command)
 helpmenu = Menu(menubar,tearoff=0)
 menubar.add_cascade(label='Help',menu=helpmenu)
 contact_url = 'https://uncle-engineer.com'
-helpmenu.add_command(label='Contact US',command=lambda: webbrowser.open(contact_url))
+helpmenu.add_command(label='CONTRACT US',command=lambda: webbrowser.open(contact_url))
 
 def About():
 	ABGUI = Toplevel()
@@ -104,7 +104,7 @@ def About():
 	L = Label(ABGUI,text='Develope by Hery Phenomenal\nhttps://www.facebook.com/herytwenty.phonsavad',font=('Angsana New',20)).pack()
 	ABGUI.mainloop()
 
-helpmenu.add_command(label='About',command=About)
+helpmenu.add_command(label='ABOUT',command=About)
 
 # ----------------Tab1 = ໜັງສື-----------------
 

@@ -87,7 +87,7 @@ class ProductIcon:
 
 	def command(self):
 		self.popup()
-		
+
 	# Refresh ໜ້າສະແດງປຸ້ມ
 	def clearbutton(self):
 		print('CLEAR_BUTTON')
@@ -252,6 +252,8 @@ class AddProduct:
 
 			B.grid(row=row, column=column)
 			column += 1
+
+		# self.button_list = button_dict
 
 
 if __name__ == '__main__':

@@ -212,6 +212,7 @@ addproduct.button_frame = CF1
 
 product_icon.button_list = button_dict
 product_icon.button_frame = CF1
+product_icon.function_add = AddMenu
 
 
 print(button_dict)

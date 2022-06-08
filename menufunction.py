@@ -13,6 +13,7 @@ class ProductIcon:
 		self.v_radio = None
 		self.button_list = None
 		self.button_frame = None
+		self.function_add = None
 
 	def popup(self):
 		# PGUI = Product GUI
@@ -114,7 +115,7 @@ class ProductIcon:
 			new_icon = PhotoImage(file=v['icon'])
 			B = ttk.Button(self.button_frame, text=v['name'], compound='top')
 			button_dict[v['id']] = {'button': B, 'row': row, 'column': column}
-			B.configure(command=lambda m=k: AddMenu(m))
+			B.configure(command=lambda m=k: self.function_add(m))
 
 			B.configure(image=new_icon)
 			B.image = new_icon
@@ -143,7 +144,7 @@ class AddProduct:
 
 	def popup(self):
 		self.MGUI = Toplevel()
-		self.MGUI.geometry('900x600')
+		self.MGUI.geometry('1100x600+50+34')
 		self.MGUI.title('ADD PRODUCT')
 
 		self.v_productid = StringVar()
@@ -151,12 +152,12 @@ class AddProduct:
 		self.v_price = StringVar()
 		self.v_imagepath = StringVar()
 
-		Fadd = Frame(self.MGUI,width=550)
+		Fadd = Frame(self.MGUI,width=800)
 
 		Fadd.place(x=50,y=34)
 
 
-		L = Label(Fadd, text=' '*30 , font=(None, 15)).pack()
+		L = Label(Fadd, text=' '*50 , font=(None, 15)).pack()
 		L = Label(Fadd, text='PRODUCT LIST', font=(None, 15))
 		L.pack(pady=10)
 
@@ -195,7 +196,7 @@ class AddProduct:
 		hwidth = [50, 120, 250, 150]
 
 		self.table_product = ttk.Treeview(self.MGUI, columns=header, show='headings', height=21)
-		self.table_product.place(x=250,y=78)
+		self.table_product.place(x=450,y=78)
 
 		for hd, hw in zip(header, hwidth):
 			self.table_product.column(hd, width=hw)

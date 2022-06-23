@@ -7,6 +7,9 @@ from menufunction import *
 import csv
 from datetime import datetime
 import webbrowser
+from matplotlib import image
+from threading import Thread
+from PIL import Image, ImageTk
 
 # ----------------FUNCTION-----------------
 
@@ -29,6 +32,11 @@ style = ttk.Style()
 style.configure('Treeview.Heading',font=(None,12))
 style.configure('Treeview',font=(None,10))
 
+canvas = Canvas(GUI, width=1920, height=1280)
+canvas.place(x=0, y=0)
+
+background = ImageTk.PhotoImage(Image.open('farm.png'))
+canvas.create_image(300, 50, anchor=NW, image=background)
 
 # --------------------------------------
 

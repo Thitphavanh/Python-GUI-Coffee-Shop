@@ -10,6 +10,9 @@ import webbrowser
 from matplotlib import image
 from threading import Thread
 from PIL import Image, ImageTk
+import requests
+
+
 
 # ----------------FUNCTION-----------------
 
@@ -21,6 +24,16 @@ def writetocsv(data, filename='data.csv'):
 	with open(filename,'a',newline='',encoding='utf-8') as file:
 		fw = csv.writer(file) # fw = file writer
 		fw.writerow(data)
+
+
+def QRImage(price=1000,account='0801234567'):
+	url='https://promptpay.io/{}/{:.2f}.png'.format(account,price)
+	response = requests.get(url)
+	if response.status_code == 200:
+		with open('qr-payment.png','wb') as f:
+			f.write(response.content)
+
+
 
 GUI = Tk()
 GUI.title('Coffee Shop Management')
@@ -174,22 +187,22 @@ print(product)
 def UpdateTable():
 	table.delete(*table.get_children()) 
 	for i,m in enumerate(allmenu.values(),start=1):
-		table.insert('','end',value=[ i ,m[0],m[1],m[2],m[3] ] )
+		table.insert('','end',value=[ i ,m[0],m[1],m[2],m[3],m[4] ] )
 
 
 def AddMenu(name='latte'):
 	# name = 'latte'
 	if name not in allmenu:
-		allmenu[name] = [product[name]['name'],product[name]['price'],1,product[name]['price']]
+		allmenu[name] = [product[name]['id'],product[name]['name'],product[name]['price'],1,product[name]['price']]
 		
 	else:
 		# {'latte': ['ລາເຕ້', 18000, 1, 18000]}
-		quan = allmenu[name][2] + 1
+		quan = allmenu[name][3] + 1
 		total = quan * product[name]['price']
-		allmenu[name] = [product[name]['name'],product[name]['price'], quan ,total]
-	print(allmenu)
+		allmenu[name] = [product[name]['id'],product[name]['name'],product[name]['price'], quan ,total]
+	print('-----> ALLMENU',allmenu)
 	# ຍອດລວມ
-	count = sum([ m[3] for m in allmenu.values()])
+	count = sum([ m[4] for m in allmenu.values()])
 	v_total.set('{:,.2f}'.format(count))
 	UpdateTable()
 
@@ -235,8 +248,8 @@ GUI.bind('<F5>',testclearbutton)
 CF2 = Frame(T3)
 CF2.place(x=500,y=100)
 
-header = ['NO.', 'TITLE', 'PRICE','QUANTITY','TOTAL']
-hwidth = [50,200,100,100,100]
+header = ['NO.','ID', 'TITLE', 'PRICE','QUANTITY','TOTAL']
+hwidth = [50,70,130,100,100,100]
 
 table = ttk.Treeview(CF2,columns=header, show='headings',height=14)
 table.pack()
@@ -248,6 +261,86 @@ for hd,hw in zip(header,hwidth):
 # for hd in header:
 #     table.heading(hd,text=hd)
 
+# Delete Button
+def DeleteProduct(event=None):
+	choice = messagebox.askyesno('Delete', 'Are you sure want to delete?')
+	print(choice)
+	if choice == True:
+		select = table.selection() # choose item 
+		print(select)
+		if len(select) != 0:
+			data = table.item(select)['values']
+			print(data)
+			del allmenu[data[1]]
+			count = sum([ m[4] for m in allmenu.values()])
+			v_total.set('{:,.2f}'.format(count))
+			UpdateTable()
+
+		else:
+			messagebox.showwarning('ບໍ່ໄດ້ເລືອກລາຍການ','ກະລຸນາເລືອກລາຍການທີ່ຈະແກ້ໄຂ')
+	else:
+		pass
+
+table.bind('<Delete>',DeleteProduct)
+
+
+# Update Quantity Button
+def UpdateQuantity(event=None):
+	GUIQ = Toplevel()
+	Width = 400
+	Height = 200
+	Monitor_width = GUIQ.winfo_screenwidth()
+	Monitor_height = GUIQ.winfo_screenheight()
+
+	Start_x = (Monitor_width/2) - (Width/2)
+	Start_y = (Monitor_height/2) - (Height/2)
+	Start_y = Start_y - 50
+
+	print('{}x{}+{:.0f}+{:.0f}'.format(Width, Height, Start_x, Start_y))
+	GUIQ.geometry('{}x{}+{:.0f}+{:.0f}'.format(Width, Height, Start_x, Start_y))
+	GUIQ.focus_force()
+
+	L = Label(GUIQ,text='Please fill quantity',font=(None,20)).pack(pady=20)
+	v_newquan = IntVar()
+	v_newquan.set(1)
+	E1 = ttk.Entry(GUIQ,textvariable=v_newquan,font=(None,20))
+	E1.pack()
+
+	E1.bind('<Up>',lambda x: v_newquan.set(v_newquan.get() + 1))
+	E1.bind('<Down>',lambda x: v_newquan.set(v_newquan.get() - 1))
+	
+
+	# GUIQ.focus_force()
+	E1.focus()
+
+	select = table.selection() # choose item 
+	if len(select) != 0:
+		data = table.item(select)['values']
+		print(data)
+		sid = data[1]
+		current_quan = data[4]
+		v_newquan.set(current_quan)
+	else:
+		messagebox.showwarning('ບໍ່ໄດ້ເລືອກລາຍການ','ກະລຸນາເລືອກລາຍການທີ່ຈະແກ້ໄຂ')
+
+	def save_update(event=None):
+		allmenu[sid][3] = v_newquan.get()
+		allmenu[sid][4] = v_newquan.get() * float(allmenu[sid][2]) # * price
+		count = sum([ m[4] for m in allmenu.values()]) # update total
+		v_total.set('{:,.2f}'.format(count))
+		UpdateTable()
+		GUIQ.destroy()
+
+
+	GUIQ.bind('<Return>',save_update)
+
+	B1 = ttk.Button(GUIQ,text='SAVE',command=save_update)
+	B1.pack(ipadx=10,ipady=10,pady=10)
+
+	GUIQ.bind('<Escape>',lambda x: GUIQ.destroy())
+	GUIQ.mainloop()
+
+table.bind('<F12>',UpdateQuantity)
 
 L = Label(T3,text='TOTAL :', font=(None,15)).place(x=500,y=430)
 
@@ -292,8 +385,69 @@ def AddTransaction():
 		writetocsv(m,'transaction.csv')
 	Reset() #clear data
 
+def CheckOut(event=None):
+	GUICO = Toplevel()
+	Width = 460
+	Height = 660
+	Monitor_width = GUICO.winfo_screenwidth()
+	Monitor_height = GUICO.winfo_screenheight()
 
-B = ttk.Button(FB, text='ORDER', command=AddTransaction)
+	Start_x = (Monitor_width/2) - (Width/2)
+	Start_y = (Monitor_height/2) - (Height/2)
+	Start_y = Start_y - 50
+
+	print('{}x{}+{:.0f}+{:.0f}'.format(Width, Height, Start_x, Start_y))
+	GUICO.geometry('{}x{}+{:.0f}+{:.0f}'.format(Width, Height, Start_x, Start_y))
+	GUICO.focus_force()
+	text = 'TOTAL {} LAK'.format(v_total.get())
+
+	L = Label(GUICO,text=text,fg='grey',font=(None,20)).pack(pady=20)
+
+	v_change =StringVar()
+	L2 = Label(GUICO,textvariable=v_change,fg='orange', font=(None,20)).pack(pady=20)
+	v_change.set('----CHANGE----')
+
+	v_cash = DoubleVar()
+	v_cash.set(0)
+	E1 = ttk.Entry(GUICO,textvariable=v_cash,font=(None,20))
+	E1.pack()
+
+	E1.bind('<Up>',lambda x: v_cash.set(v_cash.get() + 1000))
+	E1.bind('<Down>',lambda x: v_cash.set(v_cash.get() - 1000))
+	E1.focus()
+
+
+	global state
+	state = 1
+	def save_change(event=None):
+		global state 
+		if state == 1:
+			total = float(v_total.get().replace(',',''))
+			calc = v_cash.get() - total
+			v_change.set('QUANTITY CHANGE : {} LAK'.format(calc))
+			state += 1
+			Bchange.configure(text='SAVE')
+		elif state == 2:
+			GUICO.destroy()
+			state = 1
+	
+
+	GUICO.bind('<Return>',save_change)
+
+	Bchange = ttk.Button(GUICO,text='CHANGE',command=save_change)
+	Bchange.pack(ipadx=10,ipady=10,pady=10)
+
+	total = float(v_total.get().replace(',',''))
+	QRImage(total,account='0801234567')
+
+	img = PhotoImage(file='qr-payment.png')
+	qrcode = Label(GUICO,image=img).pack()
+
+	GUICO.bind('<Escape>',lambda x: GUICO.destroy())
+	GUICO.mainloop()
+
+
+B = ttk.Button(FB, text='SAVE', command=CheckOut)
 B.pack(ipadx=20, ipady=10)
 
 

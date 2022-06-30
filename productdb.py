@@ -112,8 +112,7 @@ def product_icon_list():
 
 	result_dict = {}
 	for r in result:
-		result_dict[r[0]] = {'id': r[0], 'productid': r[1],
-							 'name': r[2], 'price': r[3], 'icon': r[4]}
+		result_dict[r[0]] = {'id': r[0], 'productid': r[1],'name': r[2], 'price': r[3], 'icon': r[4]}
 
 	return result_dict
 

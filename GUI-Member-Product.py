@@ -14,6 +14,8 @@ import requests
 
 
 
+
+
 # ----------------FUNCTION-----------------
 
 addproduct = AddProduct()
@@ -387,7 +389,7 @@ def AddTransaction():
 
 def CheckOut(event=None):
 	GUICO = Toplevel()
-	Width = 460
+	Width = 680
 	Height = 660
 	Monitor_width = GUICO.winfo_screenwidth()
 	Monitor_height = GUICO.winfo_screenheight()
@@ -399,13 +401,30 @@ def CheckOut(event=None):
 	print('{}x{}+{:.0f}+{:.0f}'.format(Width, Height, Start_x, Start_y))
 	GUICO.geometry('{}x{}+{:.0f}+{:.0f}'.format(Width, Height, Start_x, Start_y))
 	GUICO.focus_force()
-	text = 'TOTAL {} LAK'.format(v_total.get())
 
-	L = Label(GUICO,text=text,fg='grey',font=(None,20)).pack(pady=20)
+	global total
+
+	if v_member.get() != 'NON-MEMBER':
+		discount_value = 0.05
+		discount = float(v_total.get().replace(',','')) * discount_value # DISCOUNT RATE
+		total = float(v_total.get().replace(',','')) - discount
+	else:
+		discount = 0
+		total = float(v_total.get().replace(',',''))
+
+
+	text = 'TOTAL {} LAK'.format(v_total.get())
+	L = Label(GUICO,text=text,fg='grey',font=(None,15)).pack(pady=10)
+
+	text = 'DISCOUNT {:,.2f} LAK'.format(discount)
+	L = Label(GUICO,text=text,fg='red',font=(None,15)).pack(pady=10)
+
+	text = 'SUMTOTAL {:,.2f} LAK'.format(total)
+	L = Label(GUICO,text=text,fg='grey',font=(None,15)).pack(pady=10)
 
 	v_change =StringVar()
-	L2 = Label(GUICO,textvariable=v_change,fg='orange', font=(None,20)).pack(pady=20)
-	v_change.set('----CHANGE----')
+	L2 = Label(GUICO,textvariable=v_change,fg='orange', font=(None,15)).pack(pady=10)
+	v_change.set('CHANGE')
 
 	v_cash = DoubleVar()
 	v_cash.set(0)
@@ -419,15 +438,18 @@ def CheckOut(event=None):
 
 	global state
 	state = 1
+
 	def save_change(event=None):
 		global state 
+		global total 
 		if state == 1:
-			total = float(v_total.get().replace(',',''))
+			total = total
 			calc = v_cash.get() - total
-			v_change.set('QUANTITY CHANGE : {} LAK'.format(calc))
+			v_change.set('CHANGE : {:,.2f} LAK'.format(calc))
 			state += 1
 			Bchange.configure(text='SAVE')
 		elif state == 2:
+			AddTransaction()
 			GUICO.destroy()
 			state = 1
 	
@@ -437,18 +459,133 @@ def CheckOut(event=None):
 	Bchange = ttk.Button(GUICO,text='CHANGE',command=save_change)
 	Bchange.pack(ipadx=10,ipady=10,pady=10)
 
-	total = float(v_total.get().replace(',',''))
 	QRImage(total,account='0801234567')
 
 	img = PhotoImage(file='qr-payment.png')
 	qrcode = Label(GUICO,image=img).pack()
 
+
+
+# ----------------BANK NOTE----------------
+	global v_banknote
+	v_banknote = 0
+
+	def Banknote(banktype):
+		global v_banknote
+		v_banknote += banktype # +50000
+		print('Current Back:',v_banknote)
+		v_cash.set(v_banknote)
+
+
+	BF = Frame(GUICO)
+	BF.pack(pady=20)
+
+	# img_bn1 = PhotoImage(file='b1000.png')
+	BN1 = ttk.Button(BF, text='100,000 LAK', command=lambda b=100000: Banknote(b))
+	BN1.grid(row=0, column=0)
+
+	# img_bn2 = PhotoImage(file='b500.png')
+	BN2 = ttk.Button(BF, text='50,000 LAK', command=lambda b=50000: Banknote(b))
+	BN2.grid(row=0, column=1)
+
+
+	# img_bn3 = PhotoImage(file='b100.png')
+	BN3 = ttk.Button(BF, text='20,000 LAK', command=lambda b=20000: Banknote(b))
+	BN3.grid(row=0, column=2)
+
+
+	# img_bn4 = PhotoImage(file='b50.png')
+	BN4 = ttk.Button(BF, text='10,000 LAK', command=lambda b=10000: Banknote(b))
+	BN4.grid(row=0, column=3)
+
+	# img_bn5 = PhotoImage(file='b20.png')
+	BN5 = ttk.Button(BF, text='5,000 LAK', command=lambda b=5000: Banknote(b))
+	BN5.grid(row=0, column=4)
+
+
+	BN5 = ttk.Button(BF, text='2,000 LAK', command=lambda b=2000: Banknote(b))
+	BN5.grid(row=0, column=5)
+
+	BN6 = ttk.Button(BF, text='1,000 LAK', command=lambda b=1000: Banknote(b))
+	BN6.grid(row=0, column=6)
+
+
+	L = ttk.Label(GUICO, text='CICK F12 CLEAR VALUES').pack()
+
+	def clear_banknote(event):
+		global v_banknote
+		v_banknote = 0
+		v_cash.set(0)
+
+
+	GUICO.bind('<F12>',clear_banknote)
 	GUICO.bind('<Escape>',lambda x: GUICO.destroy())
 	GUICO.mainloop()
 
 
 B = ttk.Button(FB, text='SAVE', command=CheckOut)
 B.pack(ipadx=20, ipady=10)
+
+v_member = StringVar()
+v_member.set('NON-MEMBER')
+
+LM = ttk.Label(T3,textvariable=v_member,font=(None,15))
+LM.place(x=780,y=450)
+LM.configure(foreground='red')
+
+
+def set_member():
+	GUIM = Toplevel()
+	Width = 280
+	Height = 180
+	Monitor_width = GUI.winfo_screenwidth()
+	Monitor_height = GUI.winfo_screenheight()
+
+	Start_x = (Monitor_width/2) - (Width/2)
+	Start_y = (Monitor_height/2) - (Height/2)
+
+	GUIM.geometry('{}x{}+{:.0f}+{:.0f}'.format(Width, Height, Start_x, Start_y))
+	GUIM.focus_force()
+
+	L = ttk.Label(GUIM, text='MEMBER MOBLIE NO.')
+	L.pack(pady=20)
+
+	v_member.set('')
+	EMember = ttk.Entry(GUIM,textvariable=v_member,font=(None,15))
+	EMember.pack()
+	EMember.focus()
+
+	def Check(event=None):
+		print(v_member.get())
+		c = CheckMember(v_member.get())
+		if c == True:
+			v_member.set(v_member.get())
+			LM.configure(foreground='grey')
+			GUIM.destroy()
+		else:
+			v_member.set('NON-MEMBER')
+			LM.configure(foreground='red')
+
+
+
+
+	B = ttk.Button(GUIM, text='CHECK',command=Check)
+	B.pack(pady=20)
+
+	GUIM.bind('<Return>',Check)
+
+	def close_window(event=None):
+		v_member.set('NON-MEMBER')
+		GUIM.destroy()
+		LM.configure(foreground='red')
+
+	GUIM.protocol('WM_DELETE_WINDOW',close_window)
+
+	GUIM.mainloop()
+
+img_member = PhotoImage(file='member-card2.png')
+Bmember = ttk.Button(T3, image=img_member,command=set_member)
+Bmember.place(x=720,y=444)
 
 
 # ----------------Search menu----------------

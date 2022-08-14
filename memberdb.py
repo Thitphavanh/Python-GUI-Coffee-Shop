@@ -53,6 +53,19 @@ def Delete_member(ID):
 	print('deleted')
 
 
+def CheckMember(TEL):
+	# CHECK
+	with conn:
+		command = 'SELECT * FROM member WHERE tel=(?)'
+		c.execute(command,([TEL]))
+		result = c.fetchall()
+		print(result)
+
+	if len(result) >= 1:
+		return True
+	else:
+		return False
+
 
 # UpdateMember(2, 'tel', '654321')	
 # DeleteMember(2)
